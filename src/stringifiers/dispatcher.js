@@ -208,6 +208,15 @@ async function handleTable(
   dialect
 ) {
   const { quote: q } = dialect
+
+  const quoteTableName = (sqlTable) => {
+    if (sqlTable.trim().split(" ").length > 1) {
+      return sqlTable
+    }
+
+    return q(sqlTable)
+  }
+
   // generate the "where" condition, if applicable
   if (whereConditionIsntSupposedToGoInsideSubqueryOrOnNextBatch(node, parent)) {
     if (idx(node, _ => _.junction.where)) {
@@ -286,7 +295,7 @@ async function handleTable(
       )
       // otherwite, just a regular left join on the table
     } else {
-      tables.push(`LEFT JOIN ${q(node.name)} ${q(node.as)} ON ${joinCondition}`)
+      tables.push(`LEFT JOIN ${quoteTableName(node.name)} ${q(node.as)} ON ${joinCondition}`)
     }
 
     // many-to-many using batching
@@ -326,8 +335,8 @@ async function handleTable(
         )
       } else {
         tables.push(
-          `FROM ${q(node.junction.sqlTable)} ${q(node.junction.as)}`,
-          `LEFT JOIN ${q(node.name)} ${q(node.as)} ON ${joinCondition}`
+          `FROM ${quoteTableName(node.junction.sqlTable)} ${q(node.junction.as)}`,
+          `LEFT JOIN ${quoteTableName(node.name)} ${q(node.as)} ON ${joinCondition}`
         )
         // ensures only the correct records are fetched using the value of the parent key
         wheres.push(
@@ -376,12 +385,12 @@ async function handleTable(
       )
     } else {
       tables.push(
-        `LEFT JOIN ${q(node.junction.sqlTable)} ${q(
+        `LEFT JOIN ${quoteTableName(node.junction.sqlTable)} ${q(
           node.junction.as
         )} ON ${joinCondition1}`
       )
     }
-    tables.push(`LEFT JOIN ${q(node.name)} ${q(node.as)} ON ${joinCondition2}`)
+    tables.push(`LEFT JOIN ${quoteTableName(node.name)} ${q(node.as)} ON ${joinCondition2}`)
 
     // one-to-many with batching
   } else if (node.sqlBatch) {
@@ -410,7 +419,7 @@ async function handleTable(
       )
       // otherwite, just a regular left join on the table
     } else {
-      tables.push(`FROM ${q(node.name)} ${q(node.as)}`)
+      tables.push(`FROM ${quoteTableName(node.name)} ${q(node.as)}`)
       wheres.push(
         `${q(node.as)}.${q(node.sqlBatch.thisKey.name)} IN (${batchScope.join(
           ','
@@ -428,7 +437,7 @@ async function handleTable(
       !parent,
       `Object type for "${node.fieldName}" table must have a "sqlJoin" or "sqlBatch"`
     )
-    tables.push(`FROM ${q(node.name)} ${q(node.as)}`)
+    tables.push(`FROM ${quoteTableName(node.name)} ${q(node.as)}`)
   }
 }
 

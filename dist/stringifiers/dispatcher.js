@@ -122,6 +122,14 @@ async function handleTable(parent, node, prefix, context, selections, tables, wh
     quote: q
   } = dialect;
 
+  const quoteTableName = sqlTable => {
+    if (sqlTable.trim().split(" ").length > 1) {
+      return sqlTable;
+    }
+
+    return q(sqlTable);
+  };
+
   if ((0, _shared.whereConditionIsntSupposedToGoInsideSubqueryOrOnNextBatch)(node, parent)) {
     var _ref5;
 
@@ -175,7 +183,7 @@ async function handleTable(parent, node, prefix, context, selections, tables, wh
       node.args.first = node.limit;
       await dialect.handleJoinedOneToManyPaginated(parent, node, context, tables, joinCondition);
     } else {
-      tables.push(`LEFT JOIN ${q(node.name)} ${q(node.as)} ON ${joinCondition}`);
+      tables.push(`LEFT JOIN ${quoteTableName(node.name)} ${q(node.as)} ON ${joinCondition}`);
     }
   } else if ((_ref2 = node) != null ? (_ref2 = _ref2.junction) != null ? _ref2.sqlBatch : _ref2 : _ref2) {
     if (parent) {
@@ -189,7 +197,7 @@ async function handleTable(parent, node, prefix, context, selections, tables, wh
         node.args.first = node.limit;
         await dialect.handleBatchedManyToManyPaginated(parent, node, context, tables, batchScope, joinCondition);
       } else {
-        tables.push(`FROM ${q(node.junction.sqlTable)} ${q(node.junction.as)}`, `LEFT JOIN ${q(node.name)} ${q(node.as)} ON ${joinCondition}`);
+        tables.push(`FROM ${quoteTableName(node.junction.sqlTable)} ${q(node.junction.as)}`, `LEFT JOIN ${quoteTableName(node.name)} ${q(node.as)} ON ${joinCondition}`);
         wheres.push(`${q(node.junction.as)}.${q(node.junction.sqlBatch.thisKey.name)} IN (${batchScope.join(',')})`);
       }
     }
@@ -203,10 +211,10 @@ async function handleTable(parent, node, prefix, context, selections, tables, wh
       node.args.first = node.limit;
       await dialect.handleJoinedManyToManyPaginated(parent, node, context, tables, joinCondition1, joinCondition2);
     } else {
-      tables.push(`LEFT JOIN ${q(node.junction.sqlTable)} ${q(node.junction.as)} ON ${joinCondition1}`);
+      tables.push(`LEFT JOIN ${quoteTableName(node.junction.sqlTable)} ${q(node.junction.as)} ON ${joinCondition1}`);
     }
 
-    tables.push(`LEFT JOIN ${q(node.name)} ${q(node.as)} ON ${joinCondition2}`);
+    tables.push(`LEFT JOIN ${quoteTableName(node.name)} ${q(node.as)} ON ${joinCondition2}`);
   } else if (node.sqlBatch) {
     if (parent) {
       selections.push(`${q(parent.as)}.${q(node.sqlBatch.parentKey.name)} AS ${q((0, _shared.joinPrefix)(prefix) + node.sqlBatch.parentKey.as)}`);
@@ -216,7 +224,7 @@ async function handleTable(parent, node, prefix, context, selections, tables, wh
       node.args.first = node.limit;
       await dialect.handleBatchedOneToManyPaginated(parent, node, context, tables, batchScope);
     } else {
-      tables.push(`FROM ${q(node.name)} ${q(node.as)}`);
+      tables.push(`FROM ${quoteTableName(node.name)} ${q(node.as)}`);
       wheres.push(`${q(node.as)}.${q(node.sqlBatch.thisKey.name)} IN (${batchScope.join(',')})`);
     }
   } else if (node.paginate) {
@@ -226,7 +234,7 @@ async function handleTable(parent, node, prefix, context, selections, tables, wh
     await dialect.handlePaginationAtRoot(parent, node, context, tables);
   } else {
     (0, _assert.default)(!parent, `Object type for "${node.fieldName}" table must have a "sqlJoin" or "sqlBatch"`);
-    tables.push(`FROM ${q(node.name)} ${q(node.as)}`);
+    tables.push(`FROM ${quoteTableName(node.name)} ${q(node.as)}`);
   }
 }
 
