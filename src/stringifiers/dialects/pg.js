@@ -6,6 +6,14 @@ import {
   generateCastExpressionFromValueType
 } from '../shared'
 
+const quoteTableName = (sqlTable) => {
+  if (sqlTable.trim().split(" ").length > 1) {
+    return sqlTable
+  }
+
+  return `"${sqlTable.replace(/`/g, "").replace(/"/g, "")}"`
+}
+
 const dialect = (module.exports = {
   name: 'pg',
 
@@ -134,7 +142,7 @@ const dialect = (module.exports = {
       pagingWhereConditions.push(whereAddendum)
       tables.push(
         keysetPagingSelect(
-          node.junction.sqlTable,
+          quoteTableName(node.junction.sqlTable),
           pagingWhereConditions,
           order,
           limit,
@@ -146,7 +154,7 @@ const dialect = (module.exports = {
       const { limit, offset, order } = interpretForOffsetPaging(node, dialect)
       tables.push(
         offsetPagingSelect(
-          node.junction.sqlTable,
+          quoteTableName(node.junction.sqlTable),
           pagingWhereConditions,
           order,
           limit,
@@ -212,7 +220,7 @@ const dialect = (module.exports = {
       pagingWhereConditions.push(whereAddendum)
       tables.push(
         keysetPagingSelect(
-          node.junction.sqlTable,
+          quoteTableName(node.junction.sqlTable),
           pagingWhereConditions,
           order,
           limit,
@@ -224,7 +232,7 @@ const dialect = (module.exports = {
       const { limit, offset, order } = interpretForOffsetPaging(node, dialect)
       tables.push(
         offsetPagingSelect(
-          node.junction.sqlTable,
+          quoteTableName(node.junction.sqlTable),
           pagingWhereConditions,
           order,
           limit,

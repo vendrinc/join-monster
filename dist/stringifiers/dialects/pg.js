@@ -2,6 +2,14 @@
 
 var _shared = require("../shared");
 
+const quoteTableName = sqlTable => {
+  if (sqlTable.trim().split(" ").length > 1) {
+    return sqlTable;
+  }
+
+  return `"${sqlTable.replace(/`/g, "").replace(/"/g, "")}"`;
+};
+
 const dialect = module.exports = {
   name: 'pg',
 
@@ -79,14 +87,14 @@ const dialect = module.exports = {
         whereCondition: whereAddendum
       } = (0, _shared.interpretForKeysetPaging)(node, dialect);
       pagingWhereConditions.push(whereAddendum);
-      tables.push((0, _shared.keysetPagingSelect)(node.junction.sqlTable, pagingWhereConditions, order, limit, node.junction.as, lateralJoinOptions));
+      tables.push((0, _shared.keysetPagingSelect)(quoteTableName(node.junction.sqlTable), pagingWhereConditions, order, limit, node.junction.as, lateralJoinOptions));
     } else if (node.orderBy || node.junction.orderBy) {
       const {
         limit,
         offset,
         order
       } = (0, _shared.interpretForOffsetPaging)(node, dialect);
-      tables.push((0, _shared.offsetPagingSelect)(node.junction.sqlTable, pagingWhereConditions, order, limit, offset, node.junction.as, lateralJoinOptions));
+      tables.push((0, _shared.offsetPagingSelect)(quoteTableName(node.junction.sqlTable), pagingWhereConditions, order, limit, offset, node.junction.as, lateralJoinOptions));
     }
 
     tables.push(`LEFT JOIN ${node.name} AS "${node.as}" ON ${joinCondition}`);
@@ -122,14 +130,14 @@ const dialect = module.exports = {
         whereCondition: whereAddendum
       } = (0, _shared.interpretForKeysetPaging)(node, dialect);
       pagingWhereConditions.push(whereAddendum);
-      tables.push((0, _shared.keysetPagingSelect)(node.junction.sqlTable, pagingWhereConditions, order, limit, node.junction.as, lateralJoinOptions));
+      tables.push((0, _shared.keysetPagingSelect)(quoteTableName(node.junction.sqlTable), pagingWhereConditions, order, limit, node.junction.as, lateralJoinOptions));
     } else if (node.orderBy || node.junction.orderBy) {
       const {
         limit,
         offset,
         order
       } = (0, _shared.interpretForOffsetPaging)(node, dialect);
-      tables.push((0, _shared.offsetPagingSelect)(node.junction.sqlTable, pagingWhereConditions, order, limit, offset, node.junction.as, lateralJoinOptions));
+      tables.push((0, _shared.offsetPagingSelect)(quoteTableName(node.junction.sqlTable), pagingWhereConditions, order, limit, offset, node.junction.as, lateralJoinOptions));
     }
   },
   handlePaginationAtRoot: async function (parent, node, context, tables) {
