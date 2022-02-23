@@ -1,23 +1,19 @@
-'use strict';
+"use strict";
 
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.default = void 0;
 
-var _generatorics = require('generatorics');
-
-var _generatorics2 = _interopRequireDefault(_generatorics);
+var _generatorics = _interopRequireDefault(require("generatorics"));
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 class AliasNamespace {
   constructor(minify) {
     this.minify = !!minify;
-
-    this.mininym = _generatorics2.default.baseNAll('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ#$');
-
+    this.mininym = _generatorics.default.baseNAll('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ#$');
     this.usedTableAliases = new Set();
-
     this.columnAssignments = {};
   }
 
@@ -43,8 +39,11 @@ class AliasNamespace {
     while (this.usedTableAliases.has(name)) {
       name += '$';
     }
+
     this.usedTableAliases.add(name);
     return name;
   }
+
 }
+
 exports.default = AliasNamespace;

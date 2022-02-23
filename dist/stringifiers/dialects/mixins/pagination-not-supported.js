@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 function throwErr() {
   throw new Error('This type of pagination not supported on this dialect');

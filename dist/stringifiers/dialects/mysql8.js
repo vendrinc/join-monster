@@ -4,8 +4,8 @@ function quote(str) {
   return `\`${str}\``;
 }
 
-module.exports = { ...require('./mixins/pagination-not-supported'),
-  name: 'mysql',
+module.exports = { ...require('./mariadb'),
+  name: 'mysql8',
   quote,
 
   compositeKey(parent, keys) {
