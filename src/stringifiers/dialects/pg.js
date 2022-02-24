@@ -58,7 +58,7 @@ const dialect = (module.exports = {
       pagingWhereConditions.push(whereAddendum)
       tables.push(
         keysetPagingSelect(
-          node.name,
+          quoteTableName(node.name),
           pagingWhereConditions,
           order,
           limit,
@@ -70,7 +70,7 @@ const dialect = (module.exports = {
       const { limit, offset, order } = interpretForOffsetPaging(node, dialect)
       tables.push(
         offsetPagingSelect(
-          node.name,
+          quoteTableName(node.name),
           pagingWhereConditions,
           order,
           limit,
@@ -260,7 +260,7 @@ const dialect = (module.exports = {
       }
       tables.push(
         keysetPagingSelect(
-          node.name,
+          quoteTableName(node.name),
           pagingWhereConditions,
           order,
           limit,
@@ -276,7 +276,7 @@ const dialect = (module.exports = {
       }
       tables.push(
         offsetPagingSelect(
-          node.name,
+          quoteTableName(node.name),
           pagingWhereConditions,
           order,
           limit,
@@ -320,7 +320,7 @@ const dialect = (module.exports = {
       pagingWhereConditions.push(whereAddendum)
       tables.push(
         keysetPagingSelect(
-          node.name,
+          quoteTableName(node.name),
           pagingWhereConditions,
           order,
           limit,
@@ -332,7 +332,7 @@ const dialect = (module.exports = {
       const { limit, offset, order } = interpretForOffsetPaging(node, dialect)
       tables.push(
         offsetPagingSelect(
-          node.name,
+          quoteTableName(node.name),
           pagingWhereConditions,
           order,
           limit,

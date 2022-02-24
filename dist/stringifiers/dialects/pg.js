@@ -36,7 +36,7 @@ const dialect = module.exports = {
         whereCondition: whereAddendum
       } = (0, _shared.interpretForKeysetPaging)(node, dialect);
       pagingWhereConditions.push(whereAddendum);
-      tables.push((0, _shared.keysetPagingSelect)(node.name, pagingWhereConditions, order, limit, node.as, {
+      tables.push((0, _shared.keysetPagingSelect)(quoteTableName(node.name), pagingWhereConditions, order, limit, node.as, {
         joinCondition,
         joinType: 'LEFT'
       }));
@@ -46,7 +46,7 @@ const dialect = module.exports = {
         offset,
         order
       } = (0, _shared.interpretForOffsetPaging)(node, dialect);
-      tables.push((0, _shared.offsetPagingSelect)(node.name, pagingWhereConditions, order, limit, offset, node.as, {
+      tables.push((0, _shared.offsetPagingSelect)(quoteTableName(node.name), pagingWhereConditions, order, limit, offset, node.as, {
         joinCondition,
         joinType: 'LEFT'
       }));
@@ -155,7 +155,7 @@ const dialect = module.exports = {
         pagingWhereConditions.push(await node.where(`"${node.as}"`, node.args || {}, context, node));
       }
 
-      tables.push((0, _shared.keysetPagingSelect)(node.name, pagingWhereConditions, order, limit, node.as));
+      tables.push((0, _shared.keysetPagingSelect)(quoteTableName(node.name), pagingWhereConditions, order, limit, node.as));
     } else if (node.orderBy) {
       const {
         limit,
@@ -167,7 +167,7 @@ const dialect = module.exports = {
         pagingWhereConditions.push(await node.where(`"${node.as}"`, node.args || {}, context, node));
       }
 
-      tables.push((0, _shared.offsetPagingSelect)(node.name, pagingWhereConditions, order, limit, offset, node.as));
+      tables.push((0, _shared.offsetPagingSelect)(quoteTableName(node.name), pagingWhereConditions, order, limit, offset, node.as));
     }
   },
   handleBatchedOneToManyPaginated: async function (parent, node, context, tables, batchScope) {
@@ -189,7 +189,7 @@ const dialect = module.exports = {
         whereCondition: whereAddendum
       } = (0, _shared.interpretForKeysetPaging)(node, dialect);
       pagingWhereConditions.push(whereAddendum);
-      tables.push((0, _shared.keysetPagingSelect)(node.name, pagingWhereConditions, order, limit, node.as, {
+      tables.push((0, _shared.keysetPagingSelect)(quoteTableName(node.name), pagingWhereConditions, order, limit, node.as, {
         joinCondition: lateralJoinCondition
       }));
     } else if (node.orderBy) {
@@ -198,7 +198,7 @@ const dialect = module.exports = {
         offset,
         order
       } = (0, _shared.interpretForOffsetPaging)(node, dialect);
-      tables.push((0, _shared.offsetPagingSelect)(node.name, pagingWhereConditions, order, limit, offset, node.as, {
+      tables.push((0, _shared.offsetPagingSelect)(quoteTableName(node.name), pagingWhereConditions, order, limit, offset, node.as, {
         joinCondition: lateralJoinCondition
       }));
     }
