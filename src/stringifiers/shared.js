@@ -159,13 +159,36 @@ export function orderingsToString(orderings, q, as) {
   return orderByClauses.join(', ')
 }
 
+/**
+ *
+ * This likely means we're allowing JoinMonster to behave as though we're doing offset pagination
+ * but we're actually apply keyset pagination ourselves
+ * OFFSET IS NaN => default to 0
+ */
+function isNaN(cursor) {
+  const offset = cursorToOffset(cursor)
+
+  if (Number.isNaN(offset)) {
+    return true
+  }
+
+  return false
+}
+
 // find out what the limit, offset, order by parts should be from the relay connection args if we're paginating
 export function interpretForOffsetPaging(node, dialect) {
   const { name } = dialect
+
   if (idx(node, _ => _.args.last)) {
-    throw new Error(
-      'Backward pagination not supported with offsets. Consider using keyset pagination instead'
-    )
+    if (node.args.before && isNaN(node.args.before)) {
+      // HACKHACK Do nothing, we're secretly keyset paging
+    } else if (node.args.after && isNaN(node.args.after)) {
+      // HACKHACK Do nothing, we're secretly keyset paging
+    } else {
+      throw new Error(
+        'Backward pagination not supported with offsets. Consider using keyset pagination instead'
+      )
+    }
   }
 
   const order = {}
@@ -192,6 +215,12 @@ export function interpretForOffsetPaging(node, dialect) {
     }
     if (node.args.after) {
       offset = cursorToOffset(node.args.after) + 1
+      if (Number.isNaN(offset)) {
+        // This likely means we're allowing JoinMonster to behave as though we're doing offset pagination
+        // but we're actually apply keyset pagination ourselves
+        // OFFSET IS NaN => default to 0
+        offset = 0
+      }
     }
   }
   return { limit, offset, order }

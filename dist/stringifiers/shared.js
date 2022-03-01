@@ -171,6 +171,16 @@ function orderingsToString(orderings, q, as) {
   return orderByClauses.join(', ');
 }
 
+function isNaN(cursor) {
+  const offset = (0, _graphqlRelay.cursorToOffset)(cursor);
+
+  if (Number.isNaN(offset)) {
+    return true;
+  }
+
+  return false;
+}
+
 function interpretForOffsetPaging(node, dialect) {
   var _ref4, _ref5, _ref6;
 
@@ -179,7 +189,9 @@ function interpretForOffsetPaging(node, dialect) {
   } = dialect;
 
   if ((_ref6 = node) != null ? (_ref6 = _ref6.args) != null ? _ref6.last : _ref6 : _ref6) {
-    throw new Error('Backward pagination not supported with offsets. Consider using keyset pagination instead');
+    if (node.args.before && isNaN(node.args.before)) {} else if (node.args.after && isNaN(node.args.after)) {} else {
+      throw new Error('Backward pagination not supported with offsets. Consider using keyset pagination instead');
+    }
   }
 
   const order = {};
@@ -209,6 +221,10 @@ function interpretForOffsetPaging(node, dialect) {
 
     if (node.args.after) {
       offset = (0, _graphqlRelay.cursorToOffset)(node.args.after) + 1;
+
+      if (Number.isNaN(offset)) {
+        offset = 0;
+      }
     }
   }
 
