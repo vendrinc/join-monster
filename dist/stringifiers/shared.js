@@ -189,7 +189,7 @@ function interpretForOffsetPaging(node, dialect) {
   } = dialect;
 
   if ((_ref6 = node) != null ? (_ref6 = _ref6.args) != null ? _ref6.last : _ref6 : _ref6) {
-    if (node.args.before && isNaN(node.args.before)) {} else if (node.args.after && isNaN(node.args.after)) {} else {
+    if (node.args.before && isNaN(node.args.before)) {} else if (node.args.after && isNaN(node.args.after)) {} else if (!node.args.before && !node.args.after) {} else {
       throw new Error('Backward pagination not supported with offsets. Consider using keyset pagination instead');
     }
   }

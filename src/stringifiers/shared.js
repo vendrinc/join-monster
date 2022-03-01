@@ -184,6 +184,8 @@ export function interpretForOffsetPaging(node, dialect) {
       // HACKHACK Do nothing, we're secretly keyset paging
     } else if (node.args.after && isNaN(node.args.after)) {
       // HACKHACK Do nothing, we're secretly keyset paging
+    } else if (!node.args.before && !node.args.after) {
+      // HACKHACK Do nothing, we might be secretly keyset paging
     } else {
       throw new Error(
         'Backward pagination not supported with offsets. Consider using keyset pagination instead'
