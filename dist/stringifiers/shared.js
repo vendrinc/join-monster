@@ -3,17 +3,17 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.joinPrefix = joinPrefix;
 exports.generateCastExpressionFromValueType = generateCastExpressionFromValueType;
-exports.thisIsNotTheEndOfThisBatch = thisIsNotTheEndOfThisBatch;
-exports.whereConditionIsntSupposedToGoInsideSubqueryOrOnNextBatch = whereConditionIsntSupposedToGoInsideSubqueryOrOnNextBatch;
-exports.sortKeyToOrderings = sortKeyToOrderings;
+exports.interpretForKeysetPaging = interpretForKeysetPaging;
+exports.interpretForOffsetPaging = interpretForOffsetPaging;
+exports.joinPrefix = joinPrefix;
 exports.keysetPagingSelect = keysetPagingSelect;
 exports.offsetPagingSelect = offsetPagingSelect;
 exports.orderingsToString = orderingsToString;
-exports.interpretForOffsetPaging = interpretForOffsetPaging;
-exports.interpretForKeysetPaging = interpretForKeysetPaging;
+exports.sortKeyToOrderings = sortKeyToOrderings;
+exports.thisIsNotTheEndOfThisBatch = thisIsNotTheEndOfThisBatch;
 exports.validateCursor = validateCursor;
+exports.whereConditionIsntSupposedToGoInsideSubqueryOrOnNextBatch = whereConditionIsntSupposedToGoInsideSubqueryOrOnNextBatch;
 
 var _assert = _interopRequireDefault(require("assert"));
 
@@ -189,9 +189,7 @@ function interpretForOffsetPaging(node, dialect) {
   } = dialect;
 
   if ((_ref6 = node) != null ? (_ref6 = _ref6.args) != null ? _ref6.last : _ref6 : _ref6) {
-    if (node.args.before && isNaN(node.args.before)) {} else if (node.args.after && isNaN(node.args.after)) {} else if (!node.args.before && !node.args.after) {} else {
-      throw new Error('Backward pagination not supported with offsets. Consider using keyset pagination instead');
-    }
+    if (node.args.before && isNaN(node.args.before)) {} else if (node.args.after && isNaN(node.args.after)) {} else if (!node.args.before && !node.args.after) {} else {}
   }
 
   const order = {};

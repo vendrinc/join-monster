@@ -3,10 +3,10 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.queryASTToSqlAST = queryASTToSqlAST;
+exports.handleOrderBy = handleOrderBy;
 exports.populateASTNode = populateASTNode;
 exports.pruneDuplicateSqlDeps = pruneDuplicateSqlDeps;
-exports.handleOrderBy = handleOrderBy;
+exports.queryASTToSqlAST = queryASTToSqlAST;
 
 var _assert = _interopRequireDefault(require("assert"));
 
