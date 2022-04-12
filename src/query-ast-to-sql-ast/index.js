@@ -918,7 +918,17 @@ function spreadFragments(selections, fragments, typeName) {
 
 const validateAndNormalizeDirection = direction => {
   direction = direction.toUpperCase()
-  if (direction !== 'ASC' && direction !== 'DESC') {
+  const directions = [
+    'ASC',
+    'DESC',
+    'ASC NULLS FIRST',
+    'ASC NULLS LAST',
+    'DESC NULLS FIRST',
+    'DESC NULLS LAST',
+    'NULLS FIRST',
+    'NULLS LAST'
+  ]
+  if (!directions.includes(direction)) {
     throw new Error(direction + ' is not a valid sorting direction')
   }
   return direction
