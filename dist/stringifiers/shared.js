@@ -244,6 +244,8 @@ function isVendrCursor(cursor) {
     if (typeof jsonParsed === "object") {
       return true;
     }
+
+    return false;
   } catch (error) {
     if (String(error).match(/Unexpected token.* in JSON at position/)) {
       return false;
@@ -251,8 +253,6 @@ function isVendrCursor(cursor) {
 
     return true;
   }
-
-  return decodedCursor;
 }
 
 function interpretForKeysetPaging(node, dialect) {
