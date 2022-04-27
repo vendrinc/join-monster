@@ -218,8 +218,6 @@ function interpretForOffsetPaging(node, dialect) {
     }
 
     if (node.args.after) {
-      offset = (0, _graphqlRelay.cursorToOffset)(node.args.after) + 1;
-
       if (Number.isNaN(offset)) {
         offset = 0;
       }
