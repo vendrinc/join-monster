@@ -216,7 +216,9 @@ export function interpretForOffsetPaging(node, dialect) {
       limit++
     }
     if (node.args.after) {
-      offset = cursorToOffset(node.args.after) + 1
+      // bugbug we're deliberately choosing to break relay cursors by commenting out relay's cursorToOffset
+      // our cursors are opaque strings handled by us (Vendr)
+      // offset = cursorToOffset(node.args.after) + 1
       if (Number.isNaN(offset)) {
         // This likely means we're allowing JoinMonster to behave as though we're doing offset pagination
         // but we're actually apply keyset pagination ourselves
