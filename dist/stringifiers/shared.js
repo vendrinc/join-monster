@@ -218,6 +218,10 @@ function interpretForOffsetPaging(node, dialect) {
     }
 
     if (node.args.after) {
+      if (!isVendrCursor(node.args.after)) {
+        offset = (0, _graphqlRelay.cursorToOffset)(node.args.after) + 1;
+      }
+
       if (Number.isNaN(offset)) {
         offset = 0;
       }
@@ -229,6 +233,26 @@ function interpretForOffsetPaging(node, dialect) {
     offset,
     order
   };
+}
+
+function isVendrCursor(cursor) {
+  const decodedCursor = Buffer.from(cursor, "base64").toString();
+
+  try {
+    const jsonParsed = JSON.parse(decodedCursor);
+
+    if (typeof jsonParsed === "object") {
+      return true;
+    }
+  } catch (error) {
+    if (String(error).match(/Unexpected token.* in JSON at position/)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  return decodedCursor;
 }
 
 function interpretForKeysetPaging(node, dialect) {

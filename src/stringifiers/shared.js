@@ -216,9 +216,10 @@ export function interpretForOffsetPaging(node, dialect) {
       limit++
     }
     if (node.args.after) {
-      // bugbug we're deliberately choosing to break relay cursors by commenting out relay's cursorToOffset
-      // our cursors are opaque strings handled by us (Vendr)
-      // offset = cursorToOffset(node.args.after) + 1
+      // Only do send it off to relay for parsing if we know it's not one of our cursors
+      if (!isVendrCursor(node.args.after)) {
+        offset = cursorToOffset(node.args.after) + 1
+      }
       if (Number.isNaN(offset)) {
         // This likely means we're allowing JoinMonster to behave as though we're doing offset pagination
         // but we're actually apply keyset pagination ourselves
@@ -228,6 +229,25 @@ export function interpretForOffsetPaging(node, dialect) {
     }
   }
   return { limit, offset, order }
+}
+
+function isVendrCursor(cursor) {
+  const decodedCursor = Buffer.from(cursor, "base64").toString()
+  try {
+    const jsonParsed = JSON.parse(decodedCursor)
+
+    if (typeof jsonParsed === "object") {
+      return true
+    }
+  } catch (error) {
+    if (String(error).match(/Unexpected token.* in JSON at position/)) {
+      return false
+    }
+
+    return true
+  }
+  
+  return decodedCursor
 }
 
 export function interpretForKeysetPaging(node, dialect) {
