@@ -97,7 +97,7 @@
     "eslint-config-airbnb-base": "^14.1.0",
     "eslint-config-prettier": "^6.11.0",
     "faker": "^4.1.0",
-    "graphql": "^15.4.0",
+    "graphql": "15.8.0",
     "graphsiql": "0.2.0",
     "idx": "^2.5.6",
     "jsdoc-to-markdown": "^5.0.0",
@@ -117,10 +117,10 @@
   },
   "dependencies": {
     "@stem/nesthydrationjs": "0.4.0",
-    "debug": "^4.1.0",
-    "deprecate": "^1.0.0",
-    "generatorics": "^1.0.8",
-    "graphql-relay": "^0.6.0",
-    "lodash": "^4.17.15"
+    "debug": "4.3.4",
+    "deprecate": "1.1.1",
+    "generatorics": "1.1.0",
+    "graphql-relay": "0.10.0",
+    "lodash": "4.17.21"
   }
 }
