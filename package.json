@@ -121,6 +121,6 @@
     "deprecate": "^1.0.0",
     "generatorics": "^1.0.8",
     "graphql-relay": "0.10.0",
-    "lodash": "^4.17.15"
+    "lodash": "4.17.21"
   }
 }
