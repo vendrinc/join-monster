@@ -119,7 +119,7 @@
     "@stem/nesthydrationjs": "0.4.0",
     "debug": "^4.1.0",
     "deprecate": "^1.0.0",
-    "generatorics": "^1.0.8",
+    "generatorics": "1.1.0",
     "graphql-relay": "0.10.0",
     "lodash": "4.17.21"
   }
