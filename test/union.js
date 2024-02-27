@@ -150,3 +150,73 @@ test('it should an interface type', async t => {
   }
   t.deepEqual(expect, data)
 })
+
+test('it should return disjoint fields requests for union type', async t => {
+  const query = `
+    {
+      user(id: 1) {
+        writtenMaterial1 {
+          __typename
+          
+          ... on Comment {
+            id
+            author {
+              id
+            }
+          }
+          ... on Post {
+            id
+            author {
+              email
+            }
+          }
+        }
+      }
+    }
+  `
+  const { data, errors } = await run(query)
+  errCheck(t, errors)
+  const expect = {
+    user: {
+      writtenMaterial1: [
+        {
+          __typename: 'Comment',
+          id: 1,
+          author : {
+            id: 1,
+          }
+        },
+        {
+          __typename: 'Post',
+          id: 2,
+          author : {
+            email: 'andrew@stem.is'
+          }
+
+        },
+        {
+          __typename: 'Comment',
+          id: 4,
+          author : {
+            id: 1
+          }
+        },
+        {
+          __typename: 'Comment',
+          id: 6,
+          author : {
+            id: 1
+          }
+        },
+        {
+          __typename: 'Comment',
+          id: 8,
+          author : {
+            id: 1
+          }
+        }
+      ]
+    }
+  }
+  t.deepEqual(expect, data)
+})
