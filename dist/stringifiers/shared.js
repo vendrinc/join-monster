@@ -3,17 +3,17 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.generateCastExpressionFromValueType = generateCastExpressionFromValueType;
-exports.interpretForKeysetPaging = interpretForKeysetPaging;
-exports.interpretForOffsetPaging = interpretForOffsetPaging;
 exports.joinPrefix = joinPrefix;
+exports.generateCastExpressionFromValueType = generateCastExpressionFromValueType;
+exports.thisIsNotTheEndOfThisBatch = thisIsNotTheEndOfThisBatch;
+exports.whereConditionIsntSupposedToGoInsideSubqueryOrOnNextBatch = whereConditionIsntSupposedToGoInsideSubqueryOrOnNextBatch;
+exports.sortKeyToOrderings = sortKeyToOrderings;
 exports.keysetPagingSelect = keysetPagingSelect;
 exports.offsetPagingSelect = offsetPagingSelect;
 exports.orderingsToString = orderingsToString;
-exports.sortKeyToOrderings = sortKeyToOrderings;
-exports.thisIsNotTheEndOfThisBatch = thisIsNotTheEndOfThisBatch;
+exports.interpretForOffsetPaging = interpretForOffsetPaging;
+exports.interpretForKeysetPaging = interpretForKeysetPaging;
 exports.validateCursor = validateCursor;
-exports.whereConditionIsntSupposedToGoInsideSubqueryOrOnNextBatch = whereConditionIsntSupposedToGoInsideSubqueryOrOnNextBatch;
 
 var _assert = _interopRequireDefault(require("assert"));
 

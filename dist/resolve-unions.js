@@ -25,14 +25,7 @@ function resolveUnions(data, sqlAST) {
 
         if (Array.isArray(data)) {
           for (let obj of data) {
-            const qualifiedValue = obj[qualifiedName];
-            delete obj[qualifiedName];
-
-            if (obj[fieldName] == null && qualifiedValue != null) {
-              obj[fieldName] = qualifiedValue;
-            } else if ((0, _util.isEmptyArray)(obj[fieldName]) && !(0, _util.isEmptyArray)(qualifiedValue)) {
-              obj[fieldName] = qualifiedValue;
-            }
+            disambiguateQualifiedTypeFields(obj, child, typeName, qualifiedName, fieldName);
           }
 
           if (child.type === 'table' || child.type === 'union') {
@@ -40,18 +33,7 @@ function resolveUnions(data, sqlAST) {
             resolveUnions(nextLevelData, child);
           }
         } else {
-          const qualifiedValue = data[qualifiedName];
-          delete data[qualifiedName];
-
-          if (data[fieldName] == null && qualifiedValue != null) {
-            data[fieldName] = qualifiedValue;
-          } else if ((0, _util.isEmptyArray)(data[fieldName]) && !(0, _util.isEmptyArray)(qualifiedValue)) {
-            data[fieldName] = qualifiedValue;
-          }
-
-          if (child.type === 'table' || child.type === 'union') {
-            resolveUnions(data[fieldName], child);
-          }
+          disambiguateQualifiedTypeFields(data, child, typeName, qualifiedName, fieldName);
         }
       }
     }
@@ -72,3 +54,19 @@ function resolveUnions(data, sqlAST) {
     }
   }
 }
+
+const disambiguateQualifiedTypeFields = (obj, childASTsql, typeName, qualifiedName, requestedFieldName) => {
+  const discriminatorTypeName = childASTsql.defferedFrom.resolveType ? childASTsql.defferedFrom.resolveType(obj) : null;
+  const qualifiedValue = obj[qualifiedName];
+  delete obj[qualifiedName];
+
+  if (typeName !== discriminatorTypeName) {
+    return;
+  }
+
+  if (obj[requestedFieldName] == null && qualifiedValue != null) {
+    obj[requestedFieldName] = qualifiedValue;
+  } else if ((0, _util.isEmptyArray)(obj[requestedFieldName]) && !(0, _util.isEmptyArray)(qualifiedValue)) {
+    obj[requestedFieldName] = qualifiedValue;
+  }
+};
