@@ -56,11 +56,12 @@ export default function resolveUnions(data, sqlAST) {
 }
 
 const disambiguateQualifiedTypeFields = (obj, childASTsql, typeName, qualifiedName, requestedFieldName) => {
-  const discriminatorTypeName = childASTsql.defferedFrom.resolveType ? childASTsql.defferedFrom.resolveType(obj) : null
-  const qualifiedValue = obj[qualifiedName]
-  delete obj[qualifiedName]
-  if (typeName !== discriminatorTypeName) {
-    return
+  const discriminatorTypeName = childASTsql.defferedFrom?.resolveType ? childASTsql.defferedFrom.resolveType(obj) : null;
+  const qualifiedValue = obj[qualifiedName];
+  delete obj[qualifiedName];
+
+  if (discriminatorTypeName && typeName !== discriminatorTypeName) {
+    return;
   }
 
   if (obj[requestedFieldName] == null && qualifiedValue != null) {
