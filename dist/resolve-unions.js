@@ -34,6 +34,10 @@ function resolveUnions(data, sqlAST) {
           }
         } else {
           disambiguateQualifiedTypeFields(data, child, typeName, qualifiedName, fieldName);
+
+          if (child.type === 'table' || child.type === 'union') {
+            resolveUnions(data[fieldName], child);
+          }
         }
       }
     }
