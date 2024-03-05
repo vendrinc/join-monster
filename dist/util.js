@@ -3,22 +3,22 @@
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
-exports.buildWhereFunction = buildWhereFunction;
-exports.compileSqlAST = compileSqlAST;
-exports.cursorToObj = cursorToObj;
 exports.emphasize = emphasize;
-exports.ensure = ensure;
-exports.getConfigFromSchemaObject = getConfigFromSchemaObject;
-exports.handleUserDbCall = handleUserDbCall;
 exports.inspect = inspect;
-exports.isEmptyArray = isEmptyArray;
 exports.last = last;
-exports.maybeQuote = maybeQuote;
-exports.objToCursor = objToCursor;
-exports.sortKeyColumns = sortKeyColumns;
+exports.wrap = wrap;
+exports.isEmptyArray = isEmptyArray;
+exports.ensure = ensure;
 exports.unthunk = unthunk;
 exports.validateSqlAST = validateSqlAST;
-exports.wrap = wrap;
+exports.getConfigFromSchemaObject = getConfigFromSchemaObject;
+exports.objToCursor = objToCursor;
+exports.cursorToObj = cursorToObj;
+exports.maybeQuote = maybeQuote;
+exports.buildWhereFunction = buildWhereFunction;
+exports.handleUserDbCall = handleUserDbCall;
+exports.compileSqlAST = compileSqlAST;
+exports.sortKeyColumns = sortKeyColumns;
 
 var _util = _interopRequireDefault(require("util"));
 
