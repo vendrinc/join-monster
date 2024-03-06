@@ -119,9 +119,9 @@ const disambiguateQualifiedTypeFields = (obj, childASTsql, typeName, qualifiedNa
   const resolveTypeResult = resolveTypeFn ? resolveTypeFn(obj) : null
   const discriminatorTypeName = typeof resolveTypeResult === 'string' ? resolveTypeResult : null
 
-  const fieldTypeMatchesResolvedType = discriminatorTypeName && typeName === discriminatorTypeName
+  const fieldTypeMatchesResolvedType = typeName === discriminatorTypeName
 
-  if (!fieldTypeMatchesResolvedType) {
+  if (discriminatorTypeName && !fieldTypeMatchesResolvedType) {
     // Remove the field@TypeName from obj without replacing it
     return
   }
