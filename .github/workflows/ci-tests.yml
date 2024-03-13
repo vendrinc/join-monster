@@ -50,6 +50,9 @@ jobs:
         sudo apt-get update
         sudo apt-get install sqlite3
 
+    - name: Cache Verify
+      run: npm cache verify
+
     - name: Install Node Deps
       run: npm ci
 
