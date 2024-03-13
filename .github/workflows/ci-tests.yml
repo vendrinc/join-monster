@@ -54,7 +54,7 @@ jobs:
       run: npm cache verify
 
     - name: Install Node Deps
-      run: npm ci
+      run: npm install
 
     - name: Startup Databases
       run: |
