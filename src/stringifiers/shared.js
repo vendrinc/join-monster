@@ -242,7 +242,7 @@ function isVendrCursor(cursor) {
 
     return false
   } catch (error) {
-    if (String(error).match(/Unexpected token.* in JSON at position/)) {
+    if (error instanceof SyntaxError) {
       return false
     }
 
