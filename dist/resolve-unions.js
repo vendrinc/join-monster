@@ -59,22 +59,18 @@ function resolveUnions(data, sqlAST) {
   }
 }
 
-const disambiguateQualifiedTypeFields = (obj, childASTsql, typeName, qualifiedName, requestedFieldName) => {
-  const qualifiedValue = obj[qualifiedName];
-  delete obj[qualifiedName];
-  const resolveType = childASTsql.defferedFrom?.resolveType;
-  const resolveTypeFn = typeof resolveType === 'function' && resolveType.length < 2 ? resolveType : null;
-  const resolveTypeResult = resolveTypeFn ? resolveTypeFn(obj) : null;
-  const discriminatorTypeName = typeof resolveTypeResult === 'string' ? resolveTypeResult : null;
-  const fieldTypeMatchesResolvedType = typeName === discriminatorTypeName;
+const disambiguateQualifiedTypeFields = (data, childASTsql, typeName, qualifiedName, requestedFieldName) => {
+  const discriminatorTypeName = childASTsql.defferedFrom?.resolveType ? childASTsql.defferedFrom.resolveType(data) : null;
+  const qualifiedValue = data[qualifiedName];
+  delete data[qualifiedName];
 
-  if (discriminatorTypeName && !fieldTypeMatchesResolvedType) {
+  if (discriminatorTypeName && typeName !== discriminatorTypeName) {
     return;
   }
 
-  if (obj[requestedFieldName] == null && qualifiedValue != null) {
-    obj[requestedFieldName] = qualifiedValue;
-  } else if ((0, _util.isEmptyArray)(obj[requestedFieldName]) && !(0, _util.isEmptyArray)(qualifiedValue)) {
-    obj[requestedFieldName] = qualifiedValue;
+  if (data[requestedFieldName] == null && qualifiedValue != null) {
+    data[requestedFieldName] = qualifiedValue;
+  } else if ((0, _util.isEmptyArray)(data[requestedFieldName]) && !(0, _util.isEmptyArray)(qualifiedValue)) {
+    data[requestedFieldName] = qualifiedValue;
   }
 };
