@@ -59,69 +59,21 @@ export default function resolveUnions(data, sqlAST) {
   }
 }
 
-/**
- * Uses the resolveType() function to choose which data is selected for a given field.
- *
- * A query that selects different fields from a union type can result in having data from more than one member of the
- * union.
- *
- * For example:
- *   type Post { author: User }
- *   type Comment { author: user }
- *
- *   union WrittenMaterial = Post | Comment
- *
- *   query {
- *       writtenMaterial {
- *           ... on Comment {
- *             author {
- *               capitalizedLastName # <-- First "disjoint" field selection from author type
- *             }
- *           }
- *           ... on Post {
- *             author {
- *               email # <-- Second "disjoint" field selection from author type
- *             }
- *           }
- *       }
- *   }
- *
- *   The data returned from this query, when a Post and a Comment have the same author, can look like this FOR ANY GIVEN
- *   comment OR post:
- *   data: {
- *    "author@Comment": {"id": 1, "capitalizedLastName": "CARLSON"},
- *    "author@Post": {"id": 1, "email": "andrew@stem.is"}
- *   }
- *
- *   Where any particular result is a Comment, we need to pick the Comment-shaped data, and not the Post-shaped data, and vice-versa.
- *
- *   This function calls resolveType() on the schema for the given data in order to pick which key to use for the requested field.
- *
- *   Where it is not possible to use resolveType() to choose, the first-encountered key will be used as the field.
- *
- *
- * @param data
- * @param childASTsql
- * @param typeName
- * @param qualifiedName
- * @param requestedFieldName
- */
-const disambiguateQualifiedTypeFields = (data, childASTsql, typeName, qualifiedName, requestedFieldName) => {
-  const discriminatorTypeName = childASTsql.defferedFrom?.resolveType ? childASTsql.defferedFrom.resolveType(data) : null
-  const qualifiedValue = data[qualifiedName]
-
-  delete data[qualifiedName]
+const disambiguateQualifiedTypeFields = (obj, childASTsql, typeName, qualifiedName, requestedFieldName) => {
+  const discriminatorTypeName = childASTsql.defferedFrom?.resolveType ? childASTsql.defferedFrom.resolveType(obj) : null;
+  const qualifiedValue = obj[qualifiedName];
+  delete obj[qualifiedName];
 
   if (discriminatorTypeName && typeName !== discriminatorTypeName) {
-    return
+    return;
   }
 
-  if (data[requestedFieldName] == null && qualifiedValue != null) {
-    data[requestedFieldName] = qualifiedValue
+  if (obj[requestedFieldName] == null && qualifiedValue != null) {
+    obj[requestedFieldName] = qualifiedValue
   } else if (
-      isEmptyArray(data[requestedFieldName]) &&
+      isEmptyArray(obj[requestedFieldName]) &&
       !isEmptyArray(qualifiedValue)
   ) {
-    data[requestedFieldName] = qualifiedValue
+    obj[requestedFieldName] = qualifiedValue
   }
 }
