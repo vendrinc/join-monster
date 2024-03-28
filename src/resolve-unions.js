@@ -17,7 +17,16 @@ export default function resolveUnions(data, sqlAST) {
         const qualifiedName = child.fieldName + suffix
         if (Array.isArray(data)) {
           for (let obj of data) {
-            disambiguateQualifiedTypeFields(obj, child, typeName, qualifiedName, fieldName)
+            const qualifiedValue = obj[qualifiedName]
+            delete obj[qualifiedName]
+            if (obj[fieldName] == null && qualifiedValue != null) {
+              obj[fieldName] = qualifiedValue
+            } else if (
+              isEmptyArray(obj[fieldName]) &&
+              !isEmptyArray(qualifiedValue)
+            ) {
+              obj[fieldName] = qualifiedValue
+            }
           }
           if (child.type === 'table' || child.type === 'union') {
             const nextLevelData = chain(data)
@@ -28,7 +37,19 @@ export default function resolveUnions(data, sqlAST) {
             resolveUnions(nextLevelData, child)
           }
         } else {
-          disambiguateQualifiedTypeFields(data, child, typeName, qualifiedName, fieldName)
+          const qualifiedValue = data[qualifiedName]
+          delete data[qualifiedName]
+          if (data[fieldName] == null && qualifiedValue != null) {
+            data[fieldName] = qualifiedValue
+          } else if (
+            isEmptyArray(data[fieldName]) &&
+            !isEmptyArray(qualifiedValue)
+          ) {
+            data[fieldName] = qualifiedValue
+          }
+          if (child.type === 'table' || child.type === 'union') {
+            resolveUnions(data[fieldName], child)
+          }
         }
       }
     }
@@ -52,23 +73,5 @@ export default function resolveUnions(data, sqlAST) {
         }
       }
     }
-  }
-}
-
-const disambiguateQualifiedTypeFields = (obj, childASTsql, typeName, qualifiedName, requestedFieldName) => {
-  const discriminatorTypeName = childASTsql.defferedFrom.resolveType ? childASTsql.defferedFrom.resolveType(obj) : null
-  const qualifiedValue = obj[qualifiedName]
-  delete obj[qualifiedName]
-  if (typeName !== discriminatorTypeName) {
-    return
-  }
-
-  if (obj[requestedFieldName] == null && qualifiedValue != null) {
-    obj[requestedFieldName] = qualifiedValue
-  } else if (
-      isEmptyArray(obj[requestedFieldName]) &&
-      !isEmptyArray(qualifiedValue)
-  ) {
-    obj[requestedFieldName] = qualifiedValue
   }
 }
