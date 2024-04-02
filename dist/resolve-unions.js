@@ -25,7 +25,14 @@ function resolveUnions(data, sqlAST) {
 
         if (Array.isArray(data)) {
           for (let obj of data) {
-            disambiguateQualifiedTypeFields(obj, child, typeName, qualifiedName, fieldName);
+            const qualifiedValue = obj[qualifiedName];
+            delete obj[qualifiedName];
+
+            if (obj[fieldName] == null && qualifiedValue != null) {
+              obj[fieldName] = qualifiedValue;
+            } else if ((0, _util.isEmptyArray)(obj[fieldName]) && !(0, _util.isEmptyArray)(qualifiedValue)) {
+              obj[fieldName] = qualifiedValue;
+            }
           }
 
           if (child.type === 'table' || child.type === 'union') {
@@ -33,7 +40,14 @@ function resolveUnions(data, sqlAST) {
             resolveUnions(nextLevelData, child);
           }
         } else {
-          disambiguateQualifiedTypeFields(data, child, typeName, qualifiedName, fieldName);
+          const qualifiedValue = data[qualifiedName];
+          delete data[qualifiedName];
+
+          if (data[fieldName] == null && qualifiedValue != null) {
+            data[fieldName] = qualifiedValue;
+          } else if ((0, _util.isEmptyArray)(data[fieldName]) && !(0, _util.isEmptyArray)(qualifiedValue)) {
+            data[fieldName] = qualifiedValue;
+          }
 
           if (child.type === 'table' || child.type === 'union') {
             resolveUnions(data[fieldName], child);
@@ -58,23 +72,3 @@ function resolveUnions(data, sqlAST) {
     }
   }
 }
-
-const disambiguateQualifiedTypeFields = (obj, childASTsql, typeName, qualifiedName, requestedFieldName) => {
-  const qualifiedValue = obj[qualifiedName];
-  delete obj[qualifiedName];
-  const resolveType = childASTsql.defferedFrom?.resolveType;
-  const resolveTypeFn = typeof resolveType === 'function' && resolveType.length < 2 ? resolveType : null;
-  const resolveTypeResult = resolveTypeFn ? resolveTypeFn(obj) : null;
-  const discriminatorTypeName = typeof resolveTypeResult === 'string' ? resolveTypeResult : null;
-  const fieldTypeMatchesResolvedType = typeName === discriminatorTypeName;
-
-  if (discriminatorTypeName && !fieldTypeMatchesResolvedType) {
-    return;
-  }
-
-  if (obj[requestedFieldName] == null && qualifiedValue != null) {
-    obj[requestedFieldName] = qualifiedValue;
-  } else if ((0, _util.isEmptyArray)(obj[requestedFieldName]) && !(0, _util.isEmptyArray)(qualifiedValue)) {
-    obj[requestedFieldName] = qualifiedValue;
-  }
-};
